@@ -28,6 +28,7 @@ function love.load()
     -- player.sprite = love.graphics.newImage("sprites/suse.png")
     songsource = love.audio.newSource(songpath, "static")
     donsound = love.audio.newSource(donpath, "static")
+    donsound2 = love.audio.newSource(donpath, "static")
 
 	-- song things
     lastbeat = 0
@@ -57,12 +58,12 @@ function love.update(dt)
 
 	if conductor.songposition > (lastbeat + crotchet) then
 		lastbeat = lastbeat + crotchet
-		-- sounds()
+		sounds()
 	end
 	-- attempt to make the same thing up there but at dobule the velocity
 	if conductor.songposition > (lastbeat2 + (crotchet/2)) then
 		lastbeat2 = lastbeat2 + (crotchet/2)
-		sounds()
+		-- sounds()
 	end
 
     -- key to exit the program
@@ -72,10 +73,33 @@ function love.update(dt)
 end
 
 function sounds()
-
-	love.audio.stop(donsound)
-	love.audio.play(donsound)
-	
+	-- si donsound y no donsound2 ---
+	-- reproducir donsound2
+	-- si donsound2 y no donsound ---
+	-- reproducir donsound
+	-- si no donsound2 y no donsound ---
+	-- reproducir donsound
+	-- si donsound y donsound2
+	-- quien es mas grande? donsound:tell o donsound2:tell?
+	-- si donsound es mas grande
+	-- parar donsound y reproducirlo
+	-- si no, parar donsound2 y reproducirlo
+	if donsound:tell("seconds") > 0 and donsound2:tell("seconds") == 0 then
+		love.audio.play(donsound2)
+	elseif donsound2:tell("seconds") > 0 and donsound:tell("seconds") == 0 then
+		love.audio.play(donsound)
+	elseif donsound:tell("seconds") == 0 and donsound2:tell("seconds") == 0 then
+		love.audio.play(donsound)
+	elseif donsound:tell("seconds") > 0 and donsound2:tell("seconds") > 0 then
+		if donsound:tell("seconds") > donsound2:tell("seconds") then
+			love.audio.stop(donsound)
+			love.audio.play(donsound)
+		else
+			love.audio.stop(donsound2)
+			love.audio.play(donsound2)
+		end
+	end
+	--love.audio.play(donsound)
 end
 
 function love.draw()
@@ -99,7 +123,8 @@ function love.draw()
 	love.graphics.print("bpm: " .. bpm , 10, 10+25*7, 0, 2, 2)
 	love.graphics.print("crotchet: " .. crotchet , 10, 10+25*8, 0, 2, 2)
 	love.graphics.print("lastbeat: " .. lastbeat , 10, 10+25*9, 0, 2, 2)
-	
+	love.graphics.print("don: " .. donsound:tell("seconds") , 10, 10+25*10, 0, 2, 2)
+	love.graphics.print("don2: " .. donsound2:tell("seconds") , 10, 10+25*11, 0, 2, 2)
     -- debug menu ends here
 
 
